@@ -13,9 +13,7 @@ az vm list-usage --location "$LOCATION" --query "[?contains(name.value, 'NC') ||
 NC16as_T4_v3
 NCASv3_T4
 
-Pat token 
-ocr 
-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
+
 
 # --- Core Identifiers ---
 export LOCATION="eastus"
