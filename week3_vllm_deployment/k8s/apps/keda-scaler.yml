@@ -6,10 +6,10 @@ metadata:
 spec:
   scaleTargetRef:
     name: ocr-vlm-deployment
-  minReplicaCount: 0
-  maxReplicaCount: 2
-  cooldownPeriod: 300 # 5-minute cooldown to prevent premature node de-allocation
-  pollingInterval: 10 # Poll queue metrics every 10s
+  minReplicaCount: 1
+  maxReplicaCount: 6                 # was: 2
+  cooldownPeriod: 300
+  pollingInterval: 10
   triggers:
     # 1. Warm-start during business hours (NY Time)
     - type: cron
@@ -18,10 +18,10 @@ spec:
         start: 0 8 * * 1-5
         end: 0 18 * * 1-5
         desiredReplicas: "1"
-    # 2. Aggressive scaling based on vLLM Queue Depth (A100)
+    # 2. Aggressive scaling based on vLLM Queue Depth (T4)
     - type: prometheus
       metadata:
         serverAddress: http://prometheus-operated.monitoring.svc:9090
         metricName: vllm_num_requests_waiting
-        threshold: '1' # Scale out immediately if any request is queued in vLLM
+        threshold: '1'
         query: sum(vllm:num_requests_waiting{kubernetes_namespace="default"})

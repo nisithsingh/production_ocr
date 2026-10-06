@@ -33,17 +33,41 @@ export CUDA_VISIBLE_DEVICES=0
 ###############################################################################
 echo "🚀 Starting $MODEL_ID (served as '$SERVED_NAME') with vLLM on GPU 0..."
 
-exec vllm serve "$MODEL_PATH" \
-  --served-model-name "$SERVED_NAME" \
-  --port "$PORT" \
-  --tensor-parallel-size 1 \
-  --gpu-memory-utilization "$GPU_MEMORY" \
+#exec vllm serve "$MODEL_PATH" \
+#  --served-model-name "$SERVED_NAME" \
+#  --port "$PORT" \
+#  --tensor-parallel-size 1 \
+#  --gpu-memory-utilization "$GPU_MEMORY" \
+#  --trust-remote-code \
+#  --logits_processors vllm.model_executor.models.unlimited_ocr:NGramPerReqLogitsProcessor \
+#  --no-enable-prefix-caching \
+#  --mm-processor-cache-gb 0 \
+#  --max-model-len "$MAX_MODEL_LEN" \
+#  --max-num-batched-tokens "$MAX_NUM_BATCHED_TOKENS" \
+#  --max-num-seqs "$MAX_NUM_SEQS" \
+#  --limit-mm-per-prompt '{"image":10, "video":0}' \
+#  --enable-chunked-prefill
+
+# vllm serve deepseek-ai/DeepSeek-OCR-2 \
+#   --served-model-name deepseek-ocr \
+#   --trust-remote-code \
+#   --dtype bfloat16 \
+#   --max-model-len 4096 \
+#   --max-num-seqs 4 \
+#   --gpu-memory-utilization 0.80 \
+#   --enforce-eager \
+#   --logits-processors vllm.model_executor.models.deepseek_ocr:NGramPerReqLogitsProcessor \
+#   --no-enable-prefix-caching \
+#   --mm-processor-cache-gb 0
+
+vllm serve deepseek-ai/DeepSeek-OCR-2 \
+  --served-model-name deepseek-ocr \
   --trust-remote-code \
-  --logits_processors vllm.model_executor.models.unlimited_ocr:NGramPerReqLogitsProcessor \
+  --dtype float16 \
+  --max-model-len 4096 \
+  --max-num-seqs 2 \
+  --gpu-memory-utilization 0.85 \
+  --enforce-eager \
+  --logits-processors vllm.model_executor.models.deepseek_ocr:NGramPerReqLogitsProcessor \
   --no-enable-prefix-caching \
-  --mm-processor-cache-gb 0 \
-  --max-model-len "$MAX_MODEL_LEN" \
-  --max-num-batched-tokens "$MAX_NUM_BATCHED_TOKENS" \
-  --max-num-seqs "$MAX_NUM_SEQS" \
-  --limit-mm-per-prompt '{"image":10, "video":0}' \
-  --enable-chunked-prefill
+  --mm-processor-cache-gb 0

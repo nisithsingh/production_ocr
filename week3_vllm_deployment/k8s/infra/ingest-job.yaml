@@ -20,9 +20,9 @@ spec:
               memory: "16Gi"
           env:
             - name: MODELS
-              value: "baidu/Unlimited-OCR"
+              value: "deepseek-ai/DeepSeek-OCR-2" # 👈 Swapped to the official DeepSeek OCR v2 repository
             - name: HF_TOKEN
-              value: "" # Provide HF token if downloading gated models
+              value: "" # DeepSeek OCR is open-weights, no token required unless using a custom private mirror
           command: ["python3", "-c"]
           args:
             - |

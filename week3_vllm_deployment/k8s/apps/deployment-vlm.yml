@@ -5,7 +5,7 @@ metadata:
   labels:
     app: ocr-vlm
 spec:
-  replicas: 1 # Can be scaled auto-reactively by KEDA based on vLLM queue depth
+  replicas: 1
   selector:
     matchLabels:
       app: ocr-vlm
@@ -15,15 +15,15 @@ spec:
         app: ocr-vlm
     spec:
       nodeSelector:
-        kubernetes.azure.com/agentpool: gpunpa100
+        kubernetes.azure.com/agentpool: gpunpt4          # was: gpunpa100
       tolerations:
         - key: "sku"
           operator: "Equal"
-          value: "gpunpa100"
+          value: "gpunpt4"                                # was: gpunpa100
           effect: "NoSchedule"
       containers:
         - name: ocr-vlm-server
-          image: acrtnmweek3.azurecr.io/ocr-vlm-unlimitedocr:latest
+          image: nsacrtnmweek3.azurecr.io/ocr-vlm-deepseek:latest   # was: ocr-vlm-unlimitedocr
           imagePullPolicy: Always
           securityContext:
             capabilities:
@@ -38,7 +38,7 @@ spec:
             httpGet:
               path: /health
               port: 8000
-            failureThreshold: 60
+            failureThreshold: 90                           # was: 60
             periodSeconds: 10
           livenessProbe:
             httpGet:
@@ -52,13 +52,13 @@ spec:
             periodSeconds: 5
           resources:
             limits:
-              nvidia.com/gpu: "1" 
-              cpu: "16"
-              memory: "120Gi"
+              nvidia.com/gpu: "1"
+              cpu: "7"                                      # was: 16
+              memory: "48Gi"                                # was: 120Gi
             requests:
               nvidia.com/gpu: "1"
-              cpu: "8"
-              memory: "64Gi"
+              cpu: "4"                                      # was: 8
+              memory: "32Gi"                                # was: 64Gi
           volumeMounts:
             - name: model-weights
               mountPath: /mnt/models
